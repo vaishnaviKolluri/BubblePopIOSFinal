@@ -119,48 +119,6 @@ class GameViewModel: ObservableObject {
             }
         }
 
-        // Prevent overlaps between bubbles
-        let r = Bubble.radius
-        let minDist = r * 2
-        if bubbles.count > 1 {
-            for i in 0..<(bubbles.count - 1) {
-                for j in (i + 1)..<bubbles.count {
-                    let dx = bubbles[j].position.x - bubbles[i].position.x
-                    let dy = bubbles[j].position.y - bubbles[i].position.y
-                    let distSq = dx * dx + dy * dy
-                    let minDistSq = minDist * minDist
-                    if distSq > 0 && distSq < minDistSq {
-                        let dist = sqrt(distSq)
-                        // Normalised direction from i to j
-                        let nx = dx / dist
-                        let ny = dy / dist
-                        let penetration = minDist - dist
-                        // Push each bubble half the penetration depth apart
-                        let correction = penetration / 2
-                        bubbles[i].position.x -= nx * correction
-                        bubbles[i].position.y -= ny * correction
-                        bubbles[j].position.x += nx * correction
-                        bubbles[j].position.y += ny * correction
-
-                        // Slightly adjusting velocities to reduce immediate recollision
-                        let vi = bubbles[i].velocity
-                        let vj = bubbles[j].velocity
-                        let relativeVx = vj.dx - vi.dx
-                        let relativeVy = vj.dy - vi.dy
-                        let relAlongNormal = relativeVx * nx + relativeVy * ny
-                        if relAlongNormal < 0 {
-                            let bounce: CGFloat = 0.8
-                            let impulse = -(1 + bounce) * relAlongNormal / 2
-                            bubbles[i].velocity.dx -= impulse * nx
-                            bubbles[i].velocity.dy -= impulse * ny
-                            bubbles[j].velocity.dx += impulse * nx
-                            bubbles[j].velocity.dy += impulse * ny
-                        }
-                    }
-                }
-            }
-        }
-
         for i in indicesToRemove.reversed() {
             bubbles.remove(at: i)
         }
