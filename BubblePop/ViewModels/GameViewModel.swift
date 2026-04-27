@@ -93,7 +93,7 @@ class GameViewModel: ObservableObject {
             }
     }
 
-    // Starts a timer to update bubble positions for movement
+    // Starts a timer to update bubble positions
     private func startMovement() {
         moveTimer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
             .sink { [weak self] _ in
@@ -153,7 +153,7 @@ class GameViewModel: ObservableObject {
         return Bubble(bubbleColour: colour, position: position, velocity: velocity)
     }
     
-    // Finds valid position for creation of bubble
+    // Finds valid position for spawning a bubble
     private func findValidPosition() -> CGPoint? {
         let r = Bubble.radius
         guard screenSize.width > r * 2, screenSize.height > r * 2 else { return nil }
@@ -182,7 +182,7 @@ class GameViewModel: ObservableObject {
         return nil
     }
 
-    // Returns a colour based on probabilities defined by BubbleColour
+    // Returns a colour based on probabilities
     private func weightedRandomColour() -> BubbleColour {
         let rand = Double.random(in: 0..<1)
         var cumulative: Double = 0
